@@ -1,95 +1,152 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
 
-export default function Home() {
+import { useState, useEffect, JSX } from "react";
+import type { NextPage } from "next";
+import Link from "next/link";
+
+import styled from "@emotion/styled";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+import {
+  Container,
+  Unstable_Grid2 as Grid,
+  Stack,
+  Box,
+  Paper,
+  Typography as Text,
+} from "@mui/material";
+
+const theme = createTheme({
+  palette: {
+    mode: "light",
+  },
+});
+
+const background =
+  "https://source.unsplash.com/1600x900/?landscape,nature,water";
+const Title = styled.div`
+  position: relative;
+  color: rgb(255, 255, 255);
+  background-color: var(--background-rgb);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url(${background});
+  border-radius: 0 0 5px 5px;
+  height: 50vh;
+`;
+const TitleText = styled.div`
+  display: grid;
+  position: absolute;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+`;
+const TitleBackground = styled.div`
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+`;
+
+const Home: NextPage = () => {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
+    <ThemeProvider theme={theme}>
+      <Title>
+        {
+          <picture>
+            <img
+              style={{ display: "none" }}
+              src={background}
+              alt={"背景圖片"}
             />
-          </a>
-        </div>
-      </div>
+          </picture>
+        }
+        <TitleBackground />
+        <TitleText>
+          <Text variant="h2">Night Star Blog</Text>
+        </TitleText>
+      </Title>
+      <Container
+        maxWidth="lg"
+        sx={{
+          minHeight: "44vh",
+        }}
+      >
+        <Grid container spacing={3} sx={{ mt: 0 }}>
+          <Grid xs={12} sm={8}>
+            <Timeblock />
+          </Grid>
+          <Grid xs={12} sm={4}>
+            <Sidebar />
+          </Grid>
+        </Grid>
+      </Container>
+    </ThemeProvider>
+  );
+};
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+function Timeblock(): JSX.Element {
+  const [time, setTime] = useState("獲取中...");
 
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTime(new Date().toLocaleString());
+    }, 1000);
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [time]);
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+  return (
+    <Box
+      sx={{
+        p: 2,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <Text variant="h4">現在時間</Text>
+      <Text variant="h5">{time}</Text>
+    </Box>
+  );
 }
+
+function Sidebar(): JSX.Element {
+  return (
+    <Stack spacing={2}>
+      <Paper
+        sx={{ p: 2, display: "flex", flexDirection: "column" }}
+        elevation={0}
+      >
+        <Text variant="h5">快速導航</Text>
+        <Stack
+          spacing={1}
+          sx={{
+            pt: 1,
+            pl: 2,
+          }}
+        >
+          <Link href="/">
+            <Text variant="body1">Home</Text>
+          </Link>
+          <Link href="/blog">
+            <Text variant="body1">Blog</Text>
+          </Link>
+          <Link href="/about">
+            <Text variant="body1">About</Text>
+          </Link>
+        </Stack>
+      </Paper>
+    </Stack>
+  );
+}
+
+export default Home;
